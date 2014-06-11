@@ -1,0 +1,102 @@
+package todo;
+
+import java.util.Date;
+import java.util.Properties;
+import java.util.logging.Logger;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Store;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+public class SimpleMailSender {
+	private static Logger log = Logger.getLogger(SimpleMailSender.class.getName());
+	
+	// アカウント接続時にSSLを利用する場合に利用する
+	private final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+	
+	// SMTPサーバー接続ポート：25番を指定
+	private final String SMTP_PORT = "465";
+	// private final String SMT_PORT = "465";
+	
+	// メールアカウント
+	private final String AUTH_USER_NAME = "suguru.kyogoku@gmail.com";
+	
+	// メールアカウントのパスワード
+	private final String AUTH_PASSWORD = "sk01220122";
+	
+	// SMTPメールホスト
+	private static final String SMTP_HOST = "smtp.gmail.com";
+	
+	public static void main(String argv[]) throws Exception{
+		SimpleMailSender mail = new SimpleMailSender();
+		
+		mail.sendMessage("suguru.kyogoku@gmail.com","suguru.kyogoku@gmail.com","Test","Test","テストです");
+	}
+	
+	// メール送信する
+	// @param toAddr 送信メールアドレス
+	// @param fromAdrr 送信元メールアドレス
+	// @param personName 送信者名
+	// @param subject メールの件名
+	// @param message メール本文
+	// throws Exception
+	
+	public void sendMessage(String toAddr,String fromAddr,String personName,String subject,String message) throws Exception{
+		// メール送信プロパティの作成
+		Properties props = new Properties();
+		props.put("mail.smtp.host", SMTP_HOST);
+		props.put("mail.smtp.port", SMTP_PORT);
+		props.put("mail.host", SMTP_HOST);
+		props.put("mail.from", fromAddr);
+		
+		// SMTP認証設定
+		props.put("mail.smtp.auth", "true");
+		
+		// SMTPソケットポート(SSL用)
+		props.put("mail.smtp.socketFactory.port",SMTP_PORT);
+		
+		// ソケットクラス名
+		// SSLを利用するSMTPサーバはSSL用のソケットファクトリーを利用する
+		props.put("mail.smtp.socketFactory.class",SSL_FACTORY);
+		
+		// SSLフォールバック(SSL用)
+		props.put("mail.smtp.socketFactory.fallback",String.valueOf(false));
+		
+		// メールセッションを確立する
+		// セッション確定後はpropsに格納される
+		Session session = Session.getDefaultInstance(props,new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication(){
+				return (new PasswordAuthentication(AUTH_USER_NAME,AUTH_PASSWORD));
+			}
+		});
+		session.setDebug(true);
+		
+		// 送信メッセージを生成
+		MimeMessage mimeMsg = new MimeMessage(session);
+		
+		// 送信先(TOのほか、CCやBCCも設定可能)
+		mimeMsg.setRecipients(Message.RecipientType.TO, toAddr);
+		
+		// FROMヘッダ
+		InternetAddress fromHeader = new InternetAddress(fromAddr,personName);
+		mimeMsg.setFrom(fromHeader);
+		
+		// 件名
+		mimeMsg.setSubject(subject, "ISO-2022-JP");
+		
+		// 送信時間
+		mimeMsg.setSentDate(new Date());
+		
+		// 本文
+		mimeMsg.setText(message,"ISO-2022-JP");
+		
+		// メールを送信する
+		Transport.send(mimeMsg);
+	}
+	
+}
