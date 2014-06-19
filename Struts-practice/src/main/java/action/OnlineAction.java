@@ -6,29 +6,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
 import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.Result;
-import org.apache.struts2.convention.annotation.Results;
 
 import DAO.OnlineDataDAO;
 import DAO.OnlineField;
 
-@Results({ 
+/*@Results({ 
 	@Result(name="success",location="List.jsp")
-})
+})*/
 public class OnlineAction extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	
 	private List<OnlineField> blist;
+	private String userid;
 	
-	public void setBlist(List<OnlineField> blist){
-		this.blist = blist;
-	}
-	
-	public List<OnlineField> getBlist(){
-		return this.blist;
-	}
-	
-	@Action("/Login")
+	@Action("/List")
 	public String returnList() throws Exception{
 		
 		OnlineDataDAO dao = new OnlineDataDAO(); 
@@ -42,5 +33,18 @@ public class OnlineAction extends HttpServlet{
 		}finally{
 			dao.closeConnection();
 		}
+	}
+	
+	public void setBlist(List<OnlineField> blist){
+		this.blist = blist;
+	}
+	public List<OnlineField> getBlist(){
+		return this.blist;
+	}
+	public void setUserid(String userid){
+		this.userid = userid;
+	}
+	public String getUserid(){
+		return this.userid;
 	}
 }

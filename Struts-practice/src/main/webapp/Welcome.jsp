@@ -8,11 +8,13 @@
 </head>
 <body>
 
-<h1>ようこそ！ログインのボタンを押すと商品一覧へ遷移します。</h1>
+<h1>ようこそ！Enterのボタンを押すと商品一覧へ遷移します。</h1>
 <table>
-<s:form action="/Login" method="post" theme="simple">
-	<s:submit value="ログイン"/>
+<s:form action="/未定" method="post" theme="simple">
+	<s:submit value="Enter"/>
 </s:form>
 </table>
+<hr>
+●<a href="/Struts-practice/TopPage.jsp">トップページへ</a>|
 </body>
 </html>

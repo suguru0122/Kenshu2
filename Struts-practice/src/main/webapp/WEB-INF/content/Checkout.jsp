@@ -4,6 +4,7 @@
 <%@ page import="action.OnlineAction"%>
 <%@ page import="DAO.OnlineField"%>
 <%@ page import="DAO.OnlineDataDAO"%>
+<%@ page import="DAO.SqlDAO"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Iterator"%>
 
@@ -16,30 +17,36 @@
 <body>
 
 <center>
-<h2>購入商品</h2>
+<h2>(m´・ω・｀)m ☆購入商品☆ m(´・ω・｀m)</h2>
 </center>
 
 <br><br>
-以下が購入する商品と合計です。
+<center><h2>以下が購入する商品と合計です。</h2></center>
 <br>
-
+<center>
 <table border="1">
+
+<tr>
+	<th>商品番号</th>
+	<th>価格</th>
+	<th>商品名</th>
+	<th>詳細</th>
+</tr>
 <%
 List<String> cart = (List<String>)session.getAttribute("CART");
 String[] lcb =  (String[])cart.toArray(new String[0]);
-String sqlcart = "";
-for(String ISBN : lcb){
-	sqlcart += "'" + ISBN + "'" + ",";
-}
+
 if(lcb != null){
+	OnlineDataDAO o = new OnlineDataDAO();
+	o.getConnection();
 	for(String iterListid : lcb){
 		OnlineField of = (OnlineField)OnlineDataDAO.findListid(iterListid); 
 %>
 <tr>
 	<td><%= of.getObjectnumber() %></td>
-	<td><%= of.getPrice() %></td>
+	<td><%= of.getObjectprice() %>円</td>
 	<td><%= of.getObjectname() %></td>
-	<td><%= of.getDetail() %></td>
+	<td><%= of.getObjectdetail() %></td>
 </tr>
 <%
 	}
@@ -47,9 +54,10 @@ if(lcb != null){
 
 %>
 </table>
-
+</center>
 <br>
 <br>
-合計：<%= request.getAttribute("TOTAL") %>円
+<center><h3>合計：<%= request.getAttribute("TOTAL") %>円</h3></center>
+<center><h4>●<a href="/Struts-practice/Login">商品リストに戻る</a></h4></center>
 </body>
 </html>
